@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 
 # Create your models here.
@@ -12,7 +11,7 @@ class Member(AbstractUser):
 
     roles = models.IntegerField(choices=role_type, default=1)
     name = models.CharField(max_length=150)
-    last_login = models.DateTimeField(_('last login'), auto_now=True, blank=True, null=True)
+    is_delete = models.BooleanField(default=False)
 
     objects = UserManager()
 
