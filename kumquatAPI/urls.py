@@ -25,6 +25,7 @@ from kmqtAuth import views
 router = routers.DefaultRouter()
 router.register("info", views.MemberInfoViewSet)
 router.register("users", views.MemberViewSet)
+router.register("programs", views.ProgramViewSet)
 
 
 urlpatterns = [
@@ -33,4 +34,5 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+
 ]
