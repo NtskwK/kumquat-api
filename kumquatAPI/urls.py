@@ -23,8 +23,9 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 from kmqtAuth import views
 
 router = routers.DefaultRouter()
-router.register("info", views.MemberInfoViewSet)
-router.register("users", views.MemberViewSet)
+router.register("info", views.KmqtUserInfoViewSet)
+router.register("users/create", views.CreatKmqtUserViewSet)
+router.register("users", views.KmqtUserViewSet)
 router.register("programs", views.ProgramViewSet)
 
 

@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from kmqtAuth.models import Member
+from kmqtAuth.models import KmqtUser
 
 
 # Register your models here.
-class MemberAdmin(UserAdmin):
+class KmqtAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('email',)}),
@@ -19,4 +19,4 @@ class MemberAdmin(UserAdmin):
     search_fields = ('username', 'email')
 
 
-admin.site.register(Member, MemberAdmin)
+admin.site.register(KmqtUser, KmqtAdmin)

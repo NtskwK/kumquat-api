@@ -6,16 +6,16 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from kmqtAuth.models import Member, Program
-from kmqtAuth.serializers import MemberSerializer, ProgramSerializer
+from kmqtAuth.models import KmqtUser, Program
+from kmqtAuth.serializers import KmqtUserSerializer, ProgramSerializer
 
 
-class MemberInfoViewSet(viewsets.ViewSet):
-    queryset = Member.objects.all().order_by('-date_joined')
+class KmqtUserInfoViewSet(viewsets.ViewSet):
+    queryset = KmqtUser.objects.all().order_by('-date_joined')
     http_method_names = ['get']
 
     def list(self, request, *args, **kwargs):
-        user_info = Member.objects.filter(id=request.user.id) \
+        user_info = KmqtUser.objects.filter(id=request.user.id) \
             .values('roles', 'username', 'email', 'is_staff', 'is_active', 'date_joined', 'last_login')[0]
 
         role = request.user.roles
@@ -31,13 +31,9 @@ class MemberInfoViewSet(viewsets.ViewSet):
         return Response(user_info)
 
 
-# class MemberViewSet(viewsets.ModelViewSet):
-#     pass
-
-
-class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all().order_by('-date_joined')
-    serializer_class = MemberSerializer
+class KmqtUserViewSet(viewsets.ModelViewSet):
+    queryset = KmqtUser.objects.all().order_by('-date_joined')
+    serializer_class = KmqtUserSerializer
     http_method_names = ['get']
 
     # get
