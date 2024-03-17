@@ -7,7 +7,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from kmqtAuth.models import KmqtUser, Program
-from kmqtAuth.serializers import KmqtUserSerializer, ProgramSerializer
+from kmqtAuth.serializers import KmqtUserSerializer, ProgramSerializer, CreateKmqtUserSerializer
 
 
 class KmqtUserInfoViewSet(viewsets.ViewSet):
@@ -93,6 +93,18 @@ class KmqtUserViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class CreateKmqtUserViewSet(viewsets.ModelViewSet):
+    queryset = KmqtUser.objects.all()
+    serializer_class = CreateKmqtUserSerializer
+    http_method_names = ['get', 'post']
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 
 
 class ProgramViewSet(viewsets.ModelViewSet):

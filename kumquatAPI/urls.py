@@ -24,7 +24,7 @@ from kmqtAuth import views
 
 router = routers.DefaultRouter()
 router.register("info", views.KmqtUserInfoViewSet)
-router.register("users/create", views.CreatKmqtUserViewSet)
+router.register("users/create", views.CreateKmqtUserViewSet)
 router.register("users", views.KmqtUserViewSet)
 router.register("programs", views.ProgramViewSet)
 
