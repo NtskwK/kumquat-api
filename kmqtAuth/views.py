@@ -1,5 +1,6 @@
 # Create your views here.
 from datetime import datetime
+from urllib.parse import urlparse, splitport
 
 from django.db.models import Q
 from rest_framework import status
@@ -109,8 +110,14 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
 
         # Generate activation url
         instance = KmqtUser.objects.get(username=request.data['username'])
-        activate_url = request.build_absolute_uri() + str(instance.uuid).replace("-", "")
+        url = request.build_absolute_uri()
+        parsed_url = urlparse(url)
+        domain = splitport(parsed_url.netloc)[0]
+        activate_url = domain + "/register/user?uuid=" + str(instance.uuid).replace("-", "")
         print(activate_url)
+
+        # 有需要时再启用
+        # send_activate_eam_email(request.data['email'], activate_url)
 
         instance.set_password(request.data['password'])
         instance.save()
