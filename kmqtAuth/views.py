@@ -134,7 +134,7 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
         activate_url = domain + "/register/user?uuid=" + str(instance.uuid).replace("-", "")
         print(activate_url)
 
-        # 有需要时再启用
+        # 启用时需单独配置
         # send_activate_eam_email(request.data['email'], activate_url)
 
         instance.set_password(request.data['password'])
