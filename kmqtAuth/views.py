@@ -5,15 +5,32 @@ from urllib.parse import urlparse, splitport
 from django.db.models import Q
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from kmqtAuth.models import KmqtUser, Program
 from kmqtAuth.serializers import KmqtUserSerializer, ProgramSerializer, CreateKmqtUserSerializer
 
 
+class UserPageNumberPagination(PageNumberPagination):
+    page_query_param = 'page'
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+
+class ProgramPageNumberPagination(PageNumberPagination):
+    page_query_param = 'page'
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+
 class KmqtUserInfoViewSet(viewsets.ViewSet):
     queryset = KmqtUser.objects.all().order_by('-date_joined')
     http_method_names = ['get']
+    pagination_class = UserPageNumberPagination
+
 
     def list(self, request, *args, **kwargs):
         user_info = KmqtUser.objects.filter(id=request.user.id) \
@@ -34,6 +51,7 @@ class KmqtUserInfoViewSet(viewsets.ViewSet):
 
 class KmqtUserViewSet(viewsets.ModelViewSet):
     queryset = KmqtUser.objects.all().order_by('-date_joined')
+    pagination_class = UserPageNumberPagination
     serializer_class = KmqtUserSerializer
     http_method_names = ['get']
 
@@ -141,6 +159,7 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
 class ProgramViewSet(viewsets.ModelViewSet):
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer
+    pagination_class = PageNumberPagination
 
     def list(self, request, *args, **kwargs):
 
