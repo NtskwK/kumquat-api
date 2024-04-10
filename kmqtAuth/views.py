@@ -8,8 +8,8 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from kmqtAuth.models import KmqtUser, Program
-from kmqtAuth.serializers import KmqtUserSerializer, ProgramSerializer, CreateKmqtUserSerializer
+from kmqtAuth.models import KmqtUser
+from kmqtAuth.serializers import KmqtUserSerializer, CreateKmqtUserSerializer
 
 
 class UserPageNumberPagination(PageNumberPagination):
@@ -30,7 +30,6 @@ class KmqtUserInfoViewSet(viewsets.ViewSet):
     queryset = KmqtUser.objects.all().order_by('-date_joined')
     http_method_names = ['get']
     pagination_class = UserPageNumberPagination
-
 
     def list(self, request, *args, **kwargs):
         user_info = KmqtUser.objects.filter(id=request.user.id) \
@@ -80,20 +79,21 @@ class KmqtUserViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    # 无需重写
     # put
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
+    # def update(self, request, *args, **kwargs):
+    #     partial = kwargs.pop('partial', False)
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #
+    #     if getattr(instance, '_prefetched_objects_cache', None):
+    #         # If 'prefetch_related' has been applied to a queryset, we need to
+    #         # forcibly invalidate the prefetch cache on the instance.
+    #         instance._prefetched_objects_cache = {}
+    #
+    #     return Response(serializer.data)
 
     # patch
     def partial_update(self, request, *args, **kwargs):
@@ -136,6 +136,8 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
 
         # 启用时需单独配置
         # send_activate_eam_email(request.data['email'], activate_url)
+        # 与邮件激活配套使用
+        instance.is_activated = True
 
         instance.set_password(request.data['password'])
         instance.save()
@@ -144,7 +146,7 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(status=status.HTTP_201_CREATED, headers=headers)
 
     def retrieve(self, request, *args, **kwargs):
         instance = KmqtUser.objects.get(uuid=kwargs['pk'])
@@ -154,56 +156,3 @@ class CreateKmqtUserViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-class ProgramViewSet(viewsets.ModelViewSet):
-    queryset = Program.objects.all()
-    serializer_class = ProgramSerializer
-    pagination_class = PageNumberPagination
-
-    def list(self, request, *args, **kwargs):
-
-        if request.user.roles != 0:
-            self.queryset = self.queryset.filter(is_delete__isnull=True)
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        request.data['author'] = request.user.id
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance):
-        instance.is_delete = datetime.now()
-        instance.save()
-        # instance.delete()

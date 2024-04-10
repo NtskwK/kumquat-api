@@ -166,4 +166,4 @@ cython_debug/
 kumquatAPI/settings_dev.py
 
 # Django
-migrations/
+*/migrations

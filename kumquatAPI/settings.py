@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "kmqtAuth.apps.KmqtAuthConfig",
+    "equipment.apps.EquipmentConfig",
+    "program.apps.ProgramConfig",
 ]
 
 MIDDLEWARE = [

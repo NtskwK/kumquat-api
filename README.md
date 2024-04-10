@@ -11,8 +11,14 @@ pip isntall -r requirements.txt
 ### Make migrations.
 
 ```bash
-python manage.py makemigrations kmqtAuth
+python manage.py makemigrations kmqtAuth program equipment 
 python manage.py migrate
+```
+
+### Creat superuser.
+
+```bash
+python .\manage.py createsuperuser --username admin --email test@test.text
 ```
 
 ### Start server

@@ -20,19 +20,23 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from kmqtAuth import views
+import kmqtAuth.views
+import program.views
 
-router = routers.DefaultRouter()
-router.register("info", views.KmqtUserInfoViewSet)
-router.register("users/create", views.CreateKmqtUserViewSet)
-router.register("users", views.KmqtUserViewSet)
-router.register("programs", views.ProgramViewSet)
+user_router = routers.DefaultRouter()
+user_router.register("info", kmqtAuth.views.KmqtUserInfoViewSet)
+user_router.register("users/create", kmqtAuth.views.CreateKmqtUserViewSet)
+user_router.register("users", kmqtAuth.views.KmqtUserViewSet)
 
+program_router = routers.DefaultRouter()
+program_router.register("programs", program.views.ProgramViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("api/", include(router.urls)),
+    path("api/", include(user_router.urls)),
+    path("api/", include(program_router.urls)),
+
     path("api/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

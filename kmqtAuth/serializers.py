@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from kmqtAuth.models import KmqtUser, Program
+from kmqtAuth.models import KmqtUser
 
 
 class KmqtUserSerializer(serializers.ModelSerializer):
@@ -14,8 +14,3 @@ class CreateKmqtUserSerializer(serializers.ModelSerializer):
         model = KmqtUser
         fields = ['username', 'password', 'email']
 
-
-class ProgramSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Program
-        fields = "__all__"
