@@ -14,8 +14,8 @@ class KmqtUser(AbstractUser):
     ]
     roles = models.IntegerField(choices=role_type, default=1)
     is_delete = models.DateTimeField(default=None, blank=True, null=True)
-    is_active = models.BooleanField(default=False)
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    is_active = models.BooleanField(default=True)
+    # uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     first_name = None
     last_name = None
 
